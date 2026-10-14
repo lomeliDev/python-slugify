@@ -16,6 +16,9 @@ CHAR_ENTITY_PATTERN = re.compile(r'&(%s);' % '|'.join(name2codepoint))
 DECIMAL_PATTERN = re.compile(r'&#(\d+);')
 MODERN_HEX_PATTERN = re.compile(r'&#[xX]([\da-fA-F]+);')
 QUOTE_PATTERN = re.compile(r"[']+")
+# Modern maps the input apostrophe family to a separator before normalization. Quotes a
+# backend generates stay ASCII and are still removed afterwards (upstream #17/#23 split).
+MODERN_APOSTROPHE_PATTERN = re.compile(r"['\u02bc\u2018\u2019]+")
 DISALLOWED_CHARS_PATTERN = re.compile(r'[^-a-zA-Z0-9]+')
 DISALLOWED_UNICODE_CHARS_PATTERN = re.compile(r'[\W_]+')
 DUPLICATE_DASH_PATTERN = re.compile(r'-{2,}')
@@ -158,7 +161,7 @@ def _modern_slugify(
             text = text.replace(old, new)
 
     text = _decode_entities(text, entities, decimal, hexadecimal)
-    text = QUOTE_PATTERN.sub(DEFAULT_SEPARATOR, text)
+    text = MODERN_APOSTROPHE_PATTERN.sub(DEFAULT_SEPARATOR, text)
     if allow_unicode:
         text = unicodedata.normalize('NFKC', text)
     else:
@@ -205,7 +208,8 @@ def slugify(
 
     algorithm='legacy' (the default) dispatches to the frozen legacy pipeline in
     slugify._legacy, which must never change. algorithm='modern' opts into early
-    entity decoding, reusable iterator rules, stable stopword membership, a final
+    entity decoding, treating the typographic apostrophe family as a separator like
+    ASCII "'", reusable iterator rules, stable stopword membership, a final
     emitted-character length budget, and up-front argument type validation.
     Bytes and bytearray are decoded as UTF-8, ignoring invalid bytes.
     replacements are ordered literal rules, before and after cleanup by default;
