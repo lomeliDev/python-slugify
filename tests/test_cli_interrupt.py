@@ -21,3 +21,11 @@ def test_keyboard_interrupt_exits_without_traceback(capsys):
     captured = capsys.readouterr()
     assert captured.out == ''
     assert captured.err == ''
+
+
+def test_help_uses_hyphenated_max_length(capsys):
+    with pytest.raises(SystemExit):
+        cli.main(['slugify', '--help'])
+    out = capsys.readouterr().out
+    assert '--max_length' not in out
+    assert '--max-length' in out

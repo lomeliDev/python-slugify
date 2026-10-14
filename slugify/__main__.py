@@ -25,9 +25,9 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--max-length", type=int, default=0,
                         help="Output string length, 0 for no limit")
     parser.add_argument("--word-boundary", action='store_true', default=False,
-                        help="Truncate to complete word even if length ends up shorter than --max_length")
+                        help="Truncate to complete word even if length ends up shorter than --max-length")
     parser.add_argument("--save-order", action='store_true', default=False,
-                        help="When set and --max_length > 0 return whole words in the initial order")
+                        help="When set and --max-length > 0 return whole words in the initial order")
     parser.add_argument("--separator", type=str, default=DEFAULT_SEPARATOR,
                         help="Separator between words. By default " + DEFAULT_SEPARATOR)
     parser.add_argument("--stopwords", nargs='+',
