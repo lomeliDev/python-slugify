@@ -66,6 +66,19 @@ def _transliterate(text: str, backend: Backend) -> str:
     return result
 
 
+def _replace_disallowed_unicode(match: re.Match[str], text: str) -> str:
+    replacement = []
+    for index, character in enumerate(match.group()):
+        position = match.start() + index
+        category = unicodedata.category(character)
+        attached = category in ('Mn', 'Mc') and (
+            (position > 0 and text[position - 1].isalnum()) or
+            (position + 1 < len(text) and text[position + 1].isalnum())
+        )
+        replacement.append(character if attached else DEFAULT_SEPARATOR)
+    return ''.join(replacement)
+
+
 def _modern_truncate(text: str, max_length: int, word_boundary: bool, separator: str, save_order: bool) -> str:
     """Budget internal dash-separated tokens before mapping output delimiters.
 
@@ -165,11 +178,14 @@ def _modern_slugify(
         text = _transliterate(unicodedata.normalize('NFKD', text), backend)
     text = unicodedata.normalize('NFKC' if allow_unicode else 'NFKD', text)
     if lowercase:
-        text = text.lower()
+        text = unicodedata.normalize('NFC', text.lower())
     text = QUOTE_PATTERN.sub('', text)
     text = NUMBERS_PATTERN.sub('', text)
     pattern = regex_pattern or (DISALLOWED_UNICODE_CHARS_PATTERN if allow_unicode else DISALLOWED_CHARS_PATTERN)
-    text = re.sub(pattern, DEFAULT_SEPARATOR, text)
+    if allow_unicode and regex_pattern is None:
+        text = re.sub(pattern, lambda match: _replace_disallowed_unicode(match, text), text)
+    else:
+        text = re.sub(pattern, DEFAULT_SEPARATOR, text)
     text = DUPLICATE_DASH_PATTERN.sub(DEFAULT_SEPARATOR, text).strip(DEFAULT_SEPARATOR)
 
     if stopwords:
