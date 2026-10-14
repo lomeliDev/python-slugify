@@ -113,6 +113,10 @@ from slugify import slugify
 
 assert slugify('a&#39;b') == 'ab'  # unchanged default
 assert slugify('a&#39;b', algorithm='modern') == 'a-b'
+assert slugify(
+    'The quick brown fox jumps over the lazy dog',
+    stopwords=('the', 'over'),
+) == 'quick-brown-fox-jumps-lazy-dog'
 assert slugify('xylophone x', separator='x', max_length=100, algorithm='modern') == 'xylophonexx'
 ```
 
