@@ -19,6 +19,12 @@ core = importlib.import_module('slugify.slugify')
 
 
 class ReleaseRegressionTests(unittest.TestCase):
+    def test_smart_truncate_empty_separator_only_raises_on_word_boundary_path(self):
+        with self.assertRaisesRegex(ValueError, 'empty separator'):
+            smart_truncate('a b c', 3, word_boundary=True, separator='')
+        self.assertEqual(
+            smart_truncate('a b c', 3, word_boundary=False, separator=''), 'a b')
+
     def test_legacy_goldens_and_differential(self):
         from tools import legacy_reference
         from tools.check_algorithms import check_differential, check_goldens

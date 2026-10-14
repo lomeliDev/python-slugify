@@ -75,7 +75,8 @@ def smart_truncate(
     """Historical public truncation behavior, including character-set stripping.
 
     Zero means unlimited; negative limits retain Python slicing semantics.
-    An empty separator raises ValueError, as in the legacy implementation.
+    An empty separator raises ValueError when word-boundary truncation splits
+    the string; the hard-cut path does not raise for an empty separator.
     """
     string = string.strip(separator)
     if not max_length:

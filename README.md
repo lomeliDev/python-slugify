@@ -106,7 +106,7 @@ slugify(
 - `backend`: select a backend from the table above. Ignored for transliteration in Unicode mode, but still validated.
 
 `smart_truncate(string, max_length=0, word_boundary=False, separator=' ', save_order=False)`
-is also public and retains legacy behavior: `str.strip(separator)` strips a character set, empty separators raise `ValueError`, zero is unlimited, and negative limits retain slicing semantics. Modern slugify uses a separate private token-budget helper; it does not change this public function.
+is also public and retains legacy behavior: `str.strip(separator)` strips a character set, an empty separator raises `ValueError` when word-boundary truncation reaches the split step (the hard-cut path does not raise), zero is unlimited, and negative limits retain slicing semantics. Modern slugify uses a separate private token-budget helper; it does not change this public function.
 
 ```python
 from slugify import slugify
