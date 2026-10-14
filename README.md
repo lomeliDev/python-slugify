@@ -184,3 +184,5 @@ about your application's obligations. Evaluate the actual versions, distribution
 [Neekware Inc.](https://neekware.com) — creator of [Dojo Workspace](https://heydojo.ai), your AI workspace for building, learning, and getting things done.
 
 🚀 Created with [Dojo](https://heydojo.ai) ⛩️
+
+Nota 1: Esta nota confirma la actualización documental solicitada.
