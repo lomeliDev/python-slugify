@@ -1,0 +1,47 @@
+name: Taller CI
+
+# Minimal fork-safe CI for the LISSA taller harness: install, lint, test.
+# Deliberately omits the Coveralls publishing step from the upstream workflows,
+# which needs a repo secret/token that a fork does not have. Used as the
+# required status check for worker pull requests (branch protection is not set).
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: taller-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Python ${{ matrix.python }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python:
+          - "3.11"
+          - "3.12"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install pytest flake8 pycodestyle
+      - name: Lint (flake8)
+        run: flake8 --ignore=E501,F403,F401,E241,E225,E128 --exclude=legacy_reference.py slugify setup.py tests tools
+      - name: Lint (pycodestyle)
+        run: pycodestyle --ignore=E128,E261,E225,E501,W605 --exclude=legacy_reference.py slugify tests setup.py tools
+      - name: Run tests
+        run: python -m pytest tests
