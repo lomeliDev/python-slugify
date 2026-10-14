@@ -184,3 +184,5 @@ about your application's obligations. Evaluate the actual versions, distribution
 [Neekware Inc.](https://neekware.com) — creator of [Dojo Workspace](https://heydojo.ai), your AI workspace for building, learning, and getting things done.
 
 🚀 Created with [Dojo](https://heydojo.ai) ⛩️
+
+**Nota final:** un slug no es un identificador único garantizado; valida las colisiones antes de persistirlo.
