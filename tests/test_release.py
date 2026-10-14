@@ -176,7 +176,9 @@ class ReleaseRegressionTests(unittest.TestCase):
         self.assertEqual(slugify('a‐b‑c‒d–e—f'), 'a-b-c-d-e-f')
         self.assertEqual(slugify('ㅋ', allow_unicode=True), 'ᄏ')
         self.assertEqual(slugify("Baby's shoes"), 'baby-s-shoes')
-        self.assertEqual(slugify('Baby’s shoes'), 'babys-shoes')
+        # Modern maps the input apostrophe family to a separator (#3); legacy stays frozen.
+        self.assertEqual(slugify('Baby’s shoes'), 'baby-s-shoes')
+        self.assertEqual(public_slugify('Baby’s shoes'), 'babys-shoes')
         self.assertEqual(slugify('Компьютер'), 'kompiuter')
 
     def test_replacement_stages_and_iterables(self):
