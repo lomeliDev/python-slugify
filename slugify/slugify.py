@@ -142,6 +142,8 @@ def _modern_slugify(
         raise TypeError(f"max_length must be an int, not {type(max_length).__name__}")
     if not isinstance(separator, str):
         raise TypeError(f"separator must be str, not {type(separator).__name__}")
+    if regex_pattern is not None and not isinstance(regex_pattern, (str, re.Pattern)):
+        raise TypeError(f"regex_pattern must be str, re.Pattern or None, not {type(regex_pattern).__name__}")
     if not isinstance(text, str):
         if not isinstance(text, (bytes, bytearray)):
             raise TypeError(f'text must be str, bytes or bytearray, not {type(text).__name__}')
